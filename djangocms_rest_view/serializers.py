@@ -62,6 +62,7 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
     meta_description = serializers.SerializerMethodField()
     slug = serializers.SerializerMethodField()
     path = serializers.SerializerMethodField()
+    absolute_url = serializers.SerializerMethodField()
     languages = serializers.ListField(source='get_languages')
     url = serializers.SerializerMethodField()
 
@@ -70,7 +71,8 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
         fields = [
             'id', 'title', 'placeholders', 'creation_date', 'changed_date', 'publication_date',
             'publication_end_date', 'in_navigation', 'template', 'is_home', 'languages', 'parent',
-            'site', 'page_title', 'menu_title', 'meta_description', 'slug', 'url', 'path'
+            'site', 'page_title', 'menu_title', 'meta_description', 'slug', 'url', 'path',
+            'absolute_url'
         ]
 
     def get_title(self, obj):
@@ -90,6 +92,9 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
 
     def get_path(self, obj):
         return obj.get_path(self.language)
+
+    def get_absolute_url(self, obj):
+        return obj.get_absolute_url(self.language)
 
     def get_url(self, obj):
         return reverse('page-detail', args=(obj.pk,))
@@ -126,3 +131,14 @@ class PageSerializer(BasePageSerializer):
     def get_placeholders(self, obj):
         serializer = PlaceholderListSerializer(obj, context=self._context)
         return serializer.data['placeholders']
+
+
+class PageUrlSerializer(RequestSerializer, serializers.Serializer):
+    absolute_url = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
+
+    def get_absolute_url(self, obj):
+        return obj.get_absolute_url(self.language)
+
+    def get_url(self, obj):
+        return reverse('page-detail', args=(obj.pk,))

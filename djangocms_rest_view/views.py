@@ -9,7 +9,8 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 
 from .serializers import (
-    PageSerializer, PlaceholderListSerializer, PlaceholderSerializer, NavigationNodeSerializer
+    PageSerializer, PageUrlSerializer, PlaceholderListSerializer, PlaceholderSerializer,
+    NavigationNodeSerializer
 )
 
 
@@ -39,7 +40,14 @@ class PageViewSet(viewsets.ReadOnlyModelViewSet):
             return PlaceholderSerializer
         elif self.action == 'menu':
             return NavigationNodeSerializer
+        elif self.action == 'urls':
+            return PageUrlSerializer
         return PageSerializer
+
+    @list_route()
+    def urls(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data)
 
     @detail_route()
     def placeholders(self, request, *args, **kwargs):
