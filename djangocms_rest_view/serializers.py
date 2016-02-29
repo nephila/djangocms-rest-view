@@ -136,9 +136,10 @@ class PageSerializer(BasePageSerializer):
 class PageUrlSerializer(RequestSerializer, serializers.Serializer):
     absolute_url = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
+    pk = serializers.IntegerField(read_only=True)
 
     def get_absolute_url(self, obj):
-        return obj.get_absolute_url(self.language)
+        return obj.get_path()
 
     def get_url(self, obj):
         return reverse('page-detail', args=(obj.pk,))

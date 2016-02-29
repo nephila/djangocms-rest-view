@@ -7,6 +7,7 @@ __pycache__
 # Packages
 *.egg
 *.egg-info
+*.DS_Store
 dist
 build
 eggs
@@ -17,6 +18,7 @@ sdist
 develop-eggs
 .installed.cfg
 lib
+libs
 lib64
 
 # Installer logs

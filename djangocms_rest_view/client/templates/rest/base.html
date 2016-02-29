@@ -1,41 +1,46 @@
 {% load static i18n %}
 
 <!DOCTYPE html>
-<html>
+<html ng-app="cmsrest">
 <head>
     <meta charset="utf-8" />
     <title>{% block title %}{% endblock %} - RING</title>
 
     {% block js %}
-      <script src="{% static 'libs/angular/angular.min.js' %}"></script>
+      <script src="{% static 'libs/angular/angular.js' %}"></script>
+      <script src="{% static 'libs/jquery/dist/jquery.js' %}"></script>
+      <script src="{% static 'libs/angular-route/angular-route.js' %}"></script>
+      <script src="{% static 'libs/ng-nephila/ng-nephila.js' %}"></script>
+
       <script src="{% static 'js/app.js' %}"></script>
+      <script src="{% static 'js/controllers.js' %}"></script>
+      <script src="{% static 'js/filters.js' %}"></script>
+      <script src="{% static 'js/rest-client.js' %}"></script>
+
     {% endblock %}
 
     {% block head  %}{% endblock head %}
 </head>
-<body>
+<body ng-controller="ClientCtrl">
     {% csrf_token %}
     {% verbatim %}
-    <section ng-app="cmsrest" ng-controller="client" class="grid">
+    <section class="grid">
+
       <ul>
         <li ng-repeat="item in menu" class="menu">
-            <a ng-click="openPage(item.url)">{{ item.title }}</a>
+          <a href="#/pages/{{item.id}}">{{ item.title }}</a>
         </li>
       </ul>
-      <article class="body">
-        <h2 ng-bind="content_page.title"></h2>
-        <p ng-bind-html="content_page.placeholders.content | safe"></p>
-      </article>
 
     </section>
-    {% endverbatim %}
 
+    {% endverbatim %}
+    <div ng-view></div>
     {% block external_scripts %}
     {% endblock %}
-    <script type="text/javascript">
     {% block script %}
+
     {% endblock %}
-    </script>
 
 </body>
 </html>
