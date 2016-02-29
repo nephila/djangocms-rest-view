@@ -1,6 +1,6 @@
 var restControllers = angular.module('cmsrest.controllers', []);
 
-restControllers.controller('ClientCtrl', ['$scope', '$location', 'restClient', function ($scope, $location, restClient) {
+restControllers.controller('ClientCtrl', ['$scope', '$location', '$routeParams', 'restClient', function ($scope, $location, $routeParams, restClient) {
 
   restClient.boot();
 
@@ -8,7 +8,7 @@ restControllers.controller('ClientCtrl', ['$scope', '$location', 'restClient', f
     .then(function (res) {
       $scope.menu = res.data;
       if (res.data.length > 0) {
-        $location.path('/pages/' + res.data[0].id);
+        $location.path('/pages/' + ($routeParams.pageId || res.data[0].id));
       }
     })
 
