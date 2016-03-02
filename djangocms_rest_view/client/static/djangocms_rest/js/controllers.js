@@ -39,5 +39,5 @@ restControllers.controller('PageDetailCtrl', ['$scope', '$location', '$window', 
     .then(function (res_data) {
       $scope.templateUrl = '/static/partials/' + res_data.data.template;
       $scope.content_page = res_data.data;
-    });
+    }, function() {console.log("bog")});
 }]);
