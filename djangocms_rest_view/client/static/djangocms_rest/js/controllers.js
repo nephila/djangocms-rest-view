@@ -17,8 +17,42 @@ restControllers.controller('ClientCtrl', ['$scope', '$location', '$routeParams',
 
 restControllers.controller('PageDetailCtrl', ['$scope', '$location', '$window', '$routeParams', 'restClient', function ($scope, $location, $window, $routeParams, restClient) {
   $scope.content_page;
+  $scope.sekizais;
+
+  LOAD_JS_FILE = 0;
+  LOAD_JS_SCRIPT = 1;
+  LOAD_CSS_FILE = 2;
+
+  var sekizaiConfig = {
+    'js-media': {
+      'action': LOAD_JS_FILE,
+      'source': 'media'
+    },
+    'css-media': {
+      'action': LOAD_CSS_FILE,
+      'source': 'media'
+    },
+    'css-screen': {
+      'action': LOAD_CSS_FILE,
+      'source': 'static'
+    },
+    'script_ready': {
+      'action': LOAD_JS_SCRIPT
+    },
+    'js-script': {
+      'action': LOAD_JS_FILE,
+      'source': 'static'
+    },
+  }
+
   $scope.finishLoading = function() {
     setTimeout(function () {
+        $(document).ready(function() {
+          restClient.loadSekizaiResources(
+            $scope.sekizais, sekizaiConfig
+          );
+      });
+
       $('div[ng-view] a').click(function() {
         event.preventDefault();
         var href = $( this ).attr('href');
@@ -38,6 +72,7 @@ restControllers.controller('PageDetailCtrl', ['$scope', '$location', '$window', 
   restClient.getPage($routeParams.pageId)
     .then(function (res_data) {
       $scope.templateUrl = '/static/partials/' + res_data.data.template;
+      $scope.sekizais = res_data.data.placeholders.sekizai;
       $scope.content_page = res_data.data;
     }, function() {console.log("bog")});
 }]);
