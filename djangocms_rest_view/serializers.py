@@ -70,6 +70,7 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
     meta_description = serializers.SerializerMethodField()
     slug = serializers.SerializerMethodField()
     path = serializers.SerializerMethodField()
+    template = serializers.SerializerMethodField()
     absolute_url = serializers.SerializerMethodField()
     languages = serializers.ListField(source='get_languages')
     url = serializers.SerializerMethodField()
@@ -100,6 +101,9 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
 
     def get_path(self, obj):
         return obj.get_path(self.language)
+
+    def get_template(self, obj):
+        return obj.get_template()
 
     def get_absolute_url(self, obj):
         return obj.get_absolute_url(self.language)
