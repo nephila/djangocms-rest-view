@@ -1,6 +1,6 @@
-=============================
+===================
 djangocms-rest-view
-=============================
+===================
 
 .. image:: https://img.shields.io/pypi/v/djangocms-rest-view.svg?style=flat-square
     :target: https://pypi.python.org/pypi/djangocms-rest-view
@@ -30,48 +30,92 @@ djangocms-rest-view
    :target: https://codeclimate.com/github/nephila/djangocms-rest-view
    :alt: Code Climate
 
+An application to load django CMS pages in a client application.
 
-DRF View for django CMS
+djangocms-rest-view uses Django REST framework to serve django CMS pages through a REST API
 
-Documentation
+Editing must still be done the "traditional" way
+
+Installation
+------------
+
+* pip install djangocms-rest-view
+* Edit ``INSTALLED_APPS``::
+
+    INSTALLED_APPS = [
+        ...
+        'rest_framework',
+        'djangocms_rest_view',
+        ...
+    ]
+
+* Edit ``urls.py``::
+
+    urlpatterns = [
+        ...
+        url(r'^api/', include('djangocms_rest_view.urls')),
+        ...
+    ]
+
+* That's all!
+
+The REST view of the pages will be available at http://example.com/api/
+
+Sample client
 -------------
 
-The full documentation is at https://djangocms-rest-view.readthedocs.org.
+A sample Angular JS client is provided within the project.
 
-Quickstart
-----------
+To start exploring djangocms-rest view, you can install it and browse the website:
 
-Install djangocms-rest-view::
+* Edit ``INSTALLED_APPS``::
 
-    pip install djangocms-rest-view
+    INSTALLED_APPS = [
+        ...
+        'djangocms_rest_view.client',
+        ...
+    ]
 
-Then use it in a project::
+* Edit ``urls.py``::
 
-    import djangocms_rest_view
+    urlpatterns = [
+        ...
+        url(r'^rest/', include('djangocms_rest_view.client.urls')),
+        ...
+    ]
+
+the Angular client will be available at http://example.com/rest/
+
+* Install dependencies according to the application bower.json: https://gitix.iast.it/opensource/djangocms-rest-view/blob/master/bower.json
+
+example:
+
+* Copy dependencies in project ``bower.json``
+* run bower::
+
+    bower install
+
+Customize
+---------
+
+The sample client uses a dedicated base page to load all the default styles etc needed to render
+your content.
+Template is in ``rest/base.html`` copy it from ``djangocms_rest_view/client/templates/rest/base.html``
+and edit it according your needs.
 
 Features
 --------
 
-* TODO
-
-Running Tests
---------------
-
-Does the code actually work?
-
-::
-
-    source <YOURVIRTUALENV>/bin/activate
-    (myenv) $ pip install -r requirements-test.txt
-    (myenv) $ python runtests.py
+* REST view to the pages
+* Support for sekizai context in the plugins
 
 Credits
----------
+-------
 
 Tools used in rendering this package:
 
 *  Cookiecutter_
-*  `cookiecutter-pypackage`_
+*  cookiecutter-djangopackage-helper_
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`cookiecutter-djangopackage-helper`: https://github.com/nephila/cookiecutter-djangopackage-helper
+.. _cookiecutter-djangopackage-helper: https://github.com/nephila/cookiecutter-djangopackage-helper
