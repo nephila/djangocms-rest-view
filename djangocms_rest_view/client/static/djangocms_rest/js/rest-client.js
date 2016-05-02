@@ -86,7 +86,6 @@ angular.module('cmsrest.services', [])
               }
 
               if (sekizaiConfig[key].action == LOAD_JS_FILE) {
-                scriptsToLoad += 1;
                 $('head').append('<script src="' + '/' + sekizaiConfig[key].source + '/' + element + '"></script>');
               }
 
@@ -99,15 +98,11 @@ angular.module('cmsrest.services', [])
           }
         }
 
-        var checkScripts = setInterval(function() {
-          if (scriptsToLoad != scriptsLoaded) {
-            return;
-          }
-          clearInterval(checkScripts);
-          for (var rawScript of rawScripts) {
+        for (var rawScript of rawScripts) {
+          if (!(rawScript.indexOf('<script>') != -1)) {
             $('head').append('<script>' + rawScript + '</script>');
           }
-        }, 100);
+        }
 
       };
 

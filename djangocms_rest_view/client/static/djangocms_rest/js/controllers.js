@@ -39,6 +39,9 @@ restControllers.controller('PageDetailCtrl', ['$scope', '$location', '$window', 
     'script_ready': {
       'action': LOAD_JS_SCRIPT
     },
+    'js': {
+      'action': LOAD_JS_SCRIPT
+    },
     'js-script': {
       'action': LOAD_JS_FILE,
       'source': 'static'
@@ -54,15 +57,17 @@ restControllers.controller('PageDetailCtrl', ['$scope', '$location', '$window', 
       });
 
       $('div[ng-view] a').click(function() {
-        event.preventDefault();
+        var myEvent = event;
+        myEvent.preventDefault();
         var href = $( this ).attr('href');
         console.log(href);
+        var that = this;
         restClient.rewriteUrl(href)
           .then(function (newUrl) {
             $location.path(newUrl);
           }, function (newUrl) {
             console.log('Url not found, normal redirect to ' + newUrl);
-            $window.location.href = newUrl;
+            this.dispatchEvent(myEvent);
           });
 
       });
