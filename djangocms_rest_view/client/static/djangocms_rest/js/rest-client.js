@@ -73,6 +73,39 @@ angular.module('cmsrest.services', [])
         )
       };
 
+      this.loadSekizaiResources = function (sekizais, sekizaiConfig) {
+        var rawScripts = [];
+        var scriptsLoaded = 0;
+        var scriptsToLoad = 0;
+        for (var sekizai of sekizais) {
+          for (var key in sekizai) {
+            for (var element of sekizai[key]) {
+
+              if (sekizaiConfig[key].action == LOAD_JS_SCRIPT) {
+                rawScripts.push(element);
+              }
+
+              if (sekizaiConfig[key].action == LOAD_JS_FILE) {
+                $('head').append('<script src="' + '/' + sekizaiConfig[key].source + '/' + element + '"></script>');
+              }
+
+              if (sekizaiConfig[key].action == LOAD_CSS_FILE) {
+                $('<link>',{rel:'stylesheet',type:'text/css','href':'/' + sekizaiConfig[key].source + '/' + element}).appendTo('head');
+              }
+
+            }
+
+          }
+        }
+
+        for (var rawScript of rawScripts) {
+          if (!(rawScript.indexOf('<script>') != -1)) {
+            $('head').append('<script>' + rawScript + '</script>');
+          }
+        }
+
+      };
+
     }
 
     this.$get = ['$q', '$http', '$filter', function monetasServiceFactory($q, $http, $filter) {

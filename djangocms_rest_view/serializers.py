@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
 
+from classytags.utils import flatten_context
+from cms.cache.placeholder import get_placeholder_cache
 from cms.models import Page
 from django.core.urlresolvers import reverse
 from django.utils.translation import get_language_from_request
@@ -37,22 +39,28 @@ class PlaceholderListSerializer(RequestSerializer, serializers.Serializer):
     placeholders = serializers.SerializerMethodField()
 
     def get_placeholders(self, obj):
-        out = {}
+        out = {'sekizai': []}
         for placeholder in obj.placeholders.all():
             serializer = PlaceholderSerializer(placeholder, context=self._context)
             out[placeholder.slot] = serializer.data['content']
+            out['sekizai'].append(serializer.data['sekizai'])
         return out
 
 
 class PlaceholderSerializer(RequestSerializer, serializers.Serializer):
-    content = serializers.SerializerMethodField()
 
-    def get_content(self, obj):
+    def to_representation(self, instance):
         context = SekizaiContext()
         context['request'] = self.request
-        return render_placeholder(
-            obj, context, lang=self.language, editable=False
+        rendered = render_placeholder(
+            instance, context, lang=self.language, editable=False
         ).strip()
+        flat = flatten_context(context)
+        sekizai_data = {key: list(val) for key, val in flat['SEKIZAI_CONTENT_HOLDER'].items()}
+        return {
+            'content': rendered,
+            'sekizai': sekizai_data
+        }
 
 
 class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
@@ -62,6 +70,7 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
     meta_description = serializers.SerializerMethodField()
     slug = serializers.SerializerMethodField()
     path = serializers.SerializerMethodField()
+    template = serializers.SerializerMethodField()
     absolute_url = serializers.SerializerMethodField()
     languages = serializers.ListField(source='get_languages')
     url = serializers.SerializerMethodField()
@@ -92,6 +101,9 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
 
     def get_path(self, obj):
         return obj.get_path(self.language)
+
+    def get_template(self, obj):
+        return obj.get_template()
 
     def get_absolute_url(self, obj):
         return obj.get_absolute_url(self.language)
