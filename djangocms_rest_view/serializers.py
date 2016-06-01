@@ -2,7 +2,6 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 from classytags.utils import flatten_context
-from cms.cache.placeholder import get_placeholder_cache
 from cms.models import Page
 from django.core.urlresolvers import reverse
 from django.utils.translation import get_language_from_request
@@ -10,6 +9,8 @@ from rest_framework import serializers
 from cms.plugin_rendering import render_placeholder
 from rest_framework.serializers import ListSerializer
 from sekizai.context import SekizaiContext
+
+from .fields import RecursiveField
 
 
 class RequestSerializer(object):
@@ -24,12 +25,13 @@ class RequestSerializer(object):
 
 class NavigationNodeSerializer(RequestSerializer, serializers.Serializer):
     title = serializers.CharField(source='get_menu_title', read_only=True)
-    ancestors = serializers.ListField(source='get_ancestors', read_only=True)
-    descendants = serializers.ListField(source='get_descendants', read_only=True)
     url = serializers.SerializerMethodField()
     id = serializers.CharField(read_only=True)
     visible = serializers.BooleanField(read_only=True)
     attributes = serializers.DictField(source='attr', read_only=True)
+    descendants = serializers.ListField(
+        child=RecursiveField(), source='get_descendants', read_only=True
+    )
 
     def get_url(self, obj):
         return reverse('page-detail', args=(obj.id,))
