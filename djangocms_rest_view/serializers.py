@@ -32,9 +32,13 @@ class NavigationNodeSerializer(RequestSerializer, serializers.Serializer):
     descendants = serializers.ListField(
         child=RecursiveField(), source='get_descendants', read_only=True
     )
+    path = serializers.SerializerMethodField()
 
     def get_url(self, obj):
         return reverse('page-detail', args=(obj.id,))
+
+    def get_path(self, obj):
+        return obj.get_absolute_url()
 
 
 class PlaceholderListSerializer(RequestSerializer, serializers.Serializer):
