@@ -77,6 +77,8 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
     languages = serializers.ListField(source='get_languages')
     url = serializers.SerializerMethodField()
     redirect = serializers.SerializerMethodField()
+    next_page = serializers.SerializerMethodField()
+    previous_page = serializers.SerializerMethodField()
 
     class Meta:
         model = Page
@@ -84,7 +86,7 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
             'id', 'title', 'placeholders', 'creation_date', 'changed_date', 'publication_date',
             'publication_end_date', 'in_navigation', 'template', 'is_home', 'languages', 'parent',
             'site', 'page_title', 'menu_title', 'meta_description', 'slug', 'url', 'path',
-            'absolute_url', 'redirect'
+            'absolute_url', 'redirect', 'next_page', 'previous_page'
         ]
 
     def get_title(self, obj):
@@ -116,6 +118,17 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
 
     def get_redirect(self, obj):
         return obj.get_redirect(self.language)
+
+    def get_next_page(self, obj):
+        page = obj.get_next_filtered_sibling()
+        if page:
+            return page.pk
+
+    def get_previous_page(self, obj):
+        page = obj.get_previous_filtered_sibling()
+        if page:
+            return page.pk
+
 
     @classmethod
     def many_init(cls, *args, **kwargs):
