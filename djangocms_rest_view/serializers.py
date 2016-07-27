@@ -32,6 +32,7 @@ class NavigationNodeSerializer(RequestSerializer, serializers.Serializer):
     descendants = serializers.ListField(
         child=RecursiveField(), source='get_descendants', read_only=True
     )
+    brothers = serializers.SerializerMethodField()
     path = serializers.SerializerMethodField()
 
     def get_url(self, obj):
@@ -39,6 +40,14 @@ class NavigationNodeSerializer(RequestSerializer, serializers.Serializer):
 
     def get_path(self, obj):
         return obj.get_absolute_url()
+
+    def get_brothers(self, obj):
+        brothers = []
+        if obj.parent:
+            brothers = obj.parent.children
+            if brothers:
+                brothers = [(node.get_menu_title(), node.id) for node in brothers if node != obj]
+        return brothers
 
 
 class PlaceholderListSerializer(RequestSerializer, serializers.Serializer):
