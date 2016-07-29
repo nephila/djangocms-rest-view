@@ -2,6 +2,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 from cms.models import Page
+from cms.utils.moderator import use_draft
 from django.contrib.sites.shortcuts import get_current_site
 from menus.menu_pool import menu_pool
 from rest_framework import viewsets
@@ -20,7 +21,7 @@ class PageViewSet(viewsets.ReadOnlyModelViewSet):
         site = get_current_site(self.request)
         if self.action == 'menu':
             return menu_pool.get_nodes(self.request, site_id=site.pk)
-        if self.request.user.is_staff:
+        if use_draft(self.request):
             return Page.objects.drafts().on_site(site=site).distinct()
         else:
             return Page.objects.public().on_site(site=site).distinct()
