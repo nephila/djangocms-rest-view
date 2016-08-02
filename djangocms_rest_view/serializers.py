@@ -29,6 +29,9 @@ class NavigationNodeSerializer(RequestSerializer, serializers.Serializer):
     id = serializers.CharField(read_only=True)
     visible = serializers.BooleanField(read_only=True)
     attributes = serializers.DictField(source='attr', read_only=True)
+    children = serializers.ListField(
+        child=RecursiveField(), read_only=True
+    )
     descendants = serializers.ListField(
         child=RecursiveField(), source='get_descendants', read_only=True
     )
