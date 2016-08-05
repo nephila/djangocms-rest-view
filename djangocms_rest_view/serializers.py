@@ -29,6 +29,9 @@ class NavigationNodeSerializer(RequestSerializer, serializers.Serializer):
     id = serializers.CharField(read_only=True)
     visible = serializers.BooleanField(read_only=True)
     attributes = serializers.DictField(source='attr', read_only=True)
+    children = serializers.ListField(
+        child=RecursiveField(), read_only=True
+    )
     descendants = serializers.ListField(
         child=RecursiveField(), source='get_descendants', read_only=True
     )
@@ -46,7 +49,7 @@ class NavigationNodeSerializer(RequestSerializer, serializers.Serializer):
         if obj.parent:
             brothers = obj.parent.children
             if brothers:
-                brothers = [(node.get_menu_title(), node.id) for node in brothers if node != obj]
+                brothers = [{'title': node.get_menu_title(), 'id': node.id} for node in brothers if node != obj]
         return brothers
 
 
