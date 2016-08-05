@@ -49,7 +49,7 @@ class NavigationNodeSerializer(RequestSerializer, serializers.Serializer):
         if obj.parent:
             brothers = obj.parent.children
             if brothers:
-                brothers = [(node.get_menu_title(), node.id) for node in brothers if node != obj]
+                brothers = [{'title': node.get_menu_title(), 'id': node.id} for node in brothers if node != obj]
         return brothers
 
 
