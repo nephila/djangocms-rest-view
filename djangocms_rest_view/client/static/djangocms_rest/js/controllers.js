@@ -56,18 +56,16 @@ restControllers.controller('PageDetailCtrl', ['$scope', '$location', '$window', 
           );
       });
 
-      $('div[ng-view] a').click(function() {
-        var myEvent = event;
-        myEvent.preventDefault();
-        var href = $( this ).attr('href');
-        console.log(href);
+      $('div[ng-view] a:not(no-rest)').click(function() {
+        var local_event = event;
+        local_event.preventDefault();
+        var href = $(this).attr('href');
         var that = this;
         restClient.rewriteUrl(href)
           .then(function (newUrl) {
             $location.path(newUrl);
           }, function (newUrl) {
-            console.log('Url not found, normal redirect to ' + newUrl);
-            this.dispatchEvent(myEvent);
+            this.dispatchEvent(local_event);
           });
 
       });
@@ -76,8 +74,10 @@ restControllers.controller('PageDetailCtrl', ['$scope', '$location', '$window', 
 
   restClient.getPage($routeParams.pageId)
     .then(function (res_data) {
+      var load_event = new Event('page-load');
+      this.dispatchEvent(load_event);
       $scope.templateUrl = '/static/partials/' + res_data.data.template;
       $scope.sekizais = res_data.data.placeholders.sekizai;
       $scope.content_page = res_data.data;
-    }, function() {console.log("bog")});
+    }, function() {});
 }]);

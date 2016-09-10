@@ -22,7 +22,6 @@ angular.module('cmsrest.services', [])
           for (var i = 0 ; i < data.length ; i++) {
             urls[pathFilter('/', data[i].absolute_url)] = data[i].pk;
           }
-          console.log(urls);
           deferred.resolve();
         }, function(res) {
           deferred.reject();
@@ -33,7 +32,6 @@ angular.module('cmsrest.services', [])
       this.rewriteUrl = function (url) {
         var deferred = $q.defer();
         var id = urls[pathFilter('/', url)];
-        console.log(id);
 
         if (id) {
           deferred.resolve('/pages/' + id);
