@@ -103,11 +103,26 @@ your content.
 Template is in ``rest/base.html`` copy it from ``djangocms_rest_view/client/templates/rest/base.html``
 and edit it according your needs.
 
-Features
---------
+Templates
+---------
 
-* REST view to the pages
-* Support for sekizai context in the plugins
+Each django CMS has a defined template to render.
+
+You can customize the template the AngularJS client will use to render the page:
+
+* create a ``partial`` directory in the ``static`` directory
+* create ``html`` files for each page template
+* define the content of the rest-page template to render the placeholders and page title::
+
+    <article class="body">
+      <h2 ng-bind="content_page.title"></h2>
+      <p ng-bind-html="content_page.placeholders.content | safe"></p>
+    </article>
+
+  ``content_page`` is the page serialization in the angular scope and contains the full serialization
+  as visible at ``http://example.com/api/pages/<page-id>``; thus ``content_page.placeholders.content``
+  contains the rendered HTML for the ``content`` placeholder.
+
 
 Credits
 -------
