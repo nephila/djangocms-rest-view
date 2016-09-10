@@ -145,7 +145,6 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
         if page:
             return page.pk
 
-
     @classmethod
     def many_init(cls, *args, **kwargs):
         """
