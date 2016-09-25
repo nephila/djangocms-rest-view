@@ -36,8 +36,9 @@ djangocms-rest-view uses Django REST framework to serve django CMS pages through
 
 Editing must still be done the "traditional" way
 
+************
 Installation
-------------
+************
 
 * pip install djangocms-rest-view
 * Edit ``INSTALLED_APPS``::
@@ -61,8 +62,9 @@ Installation
 
 The REST view of the pages will be available at http://example.com/api/
 
+*************
 Sample client
--------------
+*************
 
 A sample Angular JS client is provided within the project.
 
@@ -124,8 +126,9 @@ You can customize the template the AngularJS client will use to render the page:
   contains the rendered HTML for the ``content`` placeholder.
 
 
+*******
 Credits
--------
+*******
 
 Tools used in rendering this package:
 

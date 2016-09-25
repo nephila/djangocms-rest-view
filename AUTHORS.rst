@@ -10,4 +10,6 @@ Development Lead
 Contributors
 ------------
 
-None yet. Why not be the first?
+* Andrea Stagi
+* Elmar Athmer
+* marco federighi
