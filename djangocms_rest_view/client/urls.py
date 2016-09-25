@@ -8,4 +8,3 @@ from .views import RestClientView
 urlpatterns = [
     url(r'^', RestClientView.as_view(), name='rest_client'),
 ]
-

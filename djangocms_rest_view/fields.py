@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function, unicode_literals
+
+import importlib
+import inspect
+
+from rest_framework.fields import Field
+from rest_framework.serializers import BaseSerializer
+
+
 """"
 Copyright (c) 2015, Warren Jin <jinwarren@gmail.com>
 
@@ -16,10 +24,6 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 """
 
-import inspect
-import importlib
-from rest_framework.fields import Field
-from rest_framework.serializers import BaseSerializer
 
 
 class RecursiveField(Field):
