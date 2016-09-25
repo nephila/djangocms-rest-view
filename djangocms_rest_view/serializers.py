@@ -6,7 +6,6 @@ from cms.models import Page
 from django.core.urlresolvers import reverse
 from django.utils.translation import get_language_from_request
 from rest_framework import serializers
-from cms.plugin_rendering import render_placeholder
 from rest_framework.serializers import ListSerializer
 from sekizai.context import SekizaiContext
 
@@ -67,13 +66,28 @@ class PlaceholderListSerializer(RequestSerializer, serializers.Serializer):
 
 class PlaceholderSerializer(RequestSerializer, serializers.Serializer):
 
-    def to_representation(self, instance):
+    def _render(self, instance):
         context = SekizaiContext()
         context['request'] = self.request
-        rendered = render_placeholder(
-            instance, context, lang=self.language, editable=False
-        ).strip()
+        try:
+            # django CMS 3.4+
+            from cms.plugin_rendering import ContentRenderer
+            renderer = ContentRenderer(self.request)
+            context['cms_content_renderer'] = renderer
+            rendered = renderer.render_placeholder(
+                instance, context, language=self.language, editable=False
+            )
+        except ImportError:
+            # django CMS 3.3 and below
+            from cms.plugin_rendering import render_placeholder
+            rendered = render_placeholder(
+                instance, context, lang=self.language, editable=False
+            )
         flat = flatten_context(context)
+        return rendered.strip(), flat
+
+    def to_representation(self, instance):
+        rendered, flat = self._render(instance)
         sekizai_data = {key: list(val) for key, val in flat['SEKIZAI_CONTENT_HOLDER'].items()}
         return {
             'content': rendered,
