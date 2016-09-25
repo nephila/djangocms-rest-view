@@ -10,8 +10,7 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 
 from .serializers import (
-    PageSerializer, PageUrlSerializer, PlaceholderListSerializer, PlaceholderSerializer,
-    NavigationNodeSerializer
+    NavigationNodeSerializer, PageSerializer, PageUrlSerializer, PlaceholderListSerializer, PlaceholderSerializer,
 )
 
 

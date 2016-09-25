@@ -23,7 +23,7 @@ version = get_version('djangocms_rest_view', '__init__.py')
 
 if sys.argv[-1] == 'publish':
     try:
-        import wheel
+        import wheel  # NOQA
     except ImportError:
         print('Wheel library missing. Please run "pip install wheel"')
         sys.exit()
