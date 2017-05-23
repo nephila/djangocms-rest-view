@@ -23,7 +23,7 @@ class PageViewSet(viewsets.ReadOnlyModelViewSet):
         if use_draft(self.request):
             return Page.objects.drafts().on_site(site=site).distinct()
         else:
-            return Page.objects.public().on_site(site=site).distinct()
+            return Page.objects.public().published().on_site(site=site).distinct()
 
     def get_placeholder(self, obj):
         slot = self.kwargs['placeholder']
