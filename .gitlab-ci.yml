@@ -1,0 +1,44 @@
+stages:
+  - lint
+  - test
+  - build
+  - deploy
+
+variables:
+  PYTHONDONTWRITEBYTECODE: 1
+
+cache:
+  key: "$CI_JOB_NAME:$CI_COMMIT_REF_NAME"
+  untracked: true
+
+pep8:
+  stage: lint
+  script:
+    - tox -epep8
+  tags:
+    - python3.5
+
+isort:
+  stage: lint
+  script:
+    - tox -eisort
+  tags:
+    - python3.5
+
+py36-django111-cms35-rest37:
+  stage: test
+  script:
+    - COMMAND="coverage run" tox -epy36-django111-cms35-rest37
+    - if [[ $? -eq 0 ]]; then coverage report; fi
+  tags:
+    - python3.5
+  coverage: '/^TOTAL.+\s([0-9\.]+)\%$/'
+
+py27-django18-cms34-rest34:
+  stage: test
+  script:
+    - COMMAND="coverage run" tox -epy27-django18-cms34-rest34
+    - if [[ $? -eq 0 ]]; then coverage report; fi
+  tags:
+    - python3.5
+  coverage: '/^TOTAL.+\s([0-9\.]+)\%$/'

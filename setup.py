@@ -19,6 +19,7 @@ def get_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError('Unable to find version string.')
 
+
 version = get_version('djangocms_rest_view', '__init__.py')
 
 if sys.argv[-1] == 'publish':
@@ -32,9 +33,9 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 if sys.argv[-1] == 'tag':
-    print("Tagging the version on github:")
-    os.system("git tag -a %s -m 'version %s'" % (version, version))
-    os.system("git push --tags")
+    print('Tagging the version on github:')
+    os.system('git tag -a %s -m "version %s"' % (version, version))
+    os.system('git push --tags')
     sys.exit()
 
 readme = open('README.rst').read()
@@ -53,24 +54,25 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
+        'django-cms',
         'djangorestframework',
     ],
-    license="BSD",
+    license='BSD',
     zip_safe=False,
     keywords='djangocms-rest-view',
+    test_suite='cms_helper.run',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Framework :: Django',
         'Framework :: Django :: 1.8',
-        'Framework :: Django :: 1.9',
+        'Framework :: Django :: 1.11',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
 )
