@@ -13,11 +13,10 @@ env:
   matrix:
   - TOXENV='pep8'
   - TOXENV='isort'
-  - TOXENV='docs'
-  - DJANGO='django111' CMS='cms35' REST='37'
-  - DJANGO='django18' CMS='cms34' REST='37'
-  - DJANGO='django111' CMS='cms35' REST='34'
-  - DJANGO='django18' CMS='cms34' REST='34'
+  - DJANGO='django111' CMS='cms35' REST='rest37'
+  - DJANGO='django18' CMS='cms34' REST='rest37'
+  - DJANGO='django111' CMS='cms35' REST='rest34'
+  - DJANGO='django18' CMS='cms34' REST='rest34'
 
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
