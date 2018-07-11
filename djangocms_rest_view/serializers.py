@@ -150,12 +150,18 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
         return obj.get_redirect(self.language)
 
     def get_next_page(self, obj):
-        page = obj.get_next_filtered_sibling()
+        try:
+            page = obj.get_next_filtered_sibling()
+        except AttributeError:
+            page = obj.node.get_next_sibling()
         if page:
             return page.pk
 
     def get_previous_page(self, obj):
-        page = obj.get_previous_filtered_sibling()
+        try:
+            page = obj.get_previous_filtered_sibling()
+        except AttributeError:
+            page = obj.node.get_prev_sibling()
         if page:
             return page.pk
 
