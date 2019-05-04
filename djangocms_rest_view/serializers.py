@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function, unicode_literals
-
 from classytags.utils import flatten_context
 from cms.models import Page
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.translation import get_language_from_request
 from rest_framework import serializers
 from rest_framework.serializers import ListSerializer
@@ -45,8 +43,8 @@ class NavigationNodeSerializer(RequestSerializer, serializers.Serializer):
 
     def get_brothers(self, obj):
         brothers = []
-        if obj.parent:
-            brothers = obj.parent.children
+        if obj.node.parent:
+            brothers = obj.node.parent.children
             if brothers:
                 brothers = [{'title': node.get_menu_title(), 'id': node.id} for node in brothers if node != obj]
         return brothers
@@ -69,20 +67,12 @@ class PlaceholderSerializer(RequestSerializer, serializers.Serializer):
     def _render(self, instance):
         context = SekizaiContext()
         context['request'] = self.request
-        try:
-            # django CMS 3.4+
-            from cms.plugin_rendering import ContentRenderer
-            renderer = ContentRenderer(self.request)
-            context['cms_content_renderer'] = renderer
-            rendered = renderer.render_placeholder(
-                instance, context, language=self.language, editable=False
-            )
-        except ImportError:
-            # django CMS 3.3 and below
-            from cms.plugin_rendering import render_placeholder
-            rendered = render_placeholder(
-                instance, context, lang=self.language, editable=False
-            )
+        from cms.plugin_rendering import ContentRenderer
+        renderer = ContentRenderer(self.request)
+        context['cms_content_renderer'] = renderer
+        rendered = renderer.render_placeholder(
+            instance, context, language=self.language, editable=False
+        )
         flat = flatten_context(context)
         return rendered.strip(), flat
 
@@ -114,8 +104,8 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
         model = Page
         fields = [
             'id', 'title', 'placeholders', 'creation_date', 'changed_date', 'publication_date',
-            'publication_end_date', 'in_navigation', 'template', 'is_home', 'languages', 'parent',
-            'site', 'page_title', 'menu_title', 'meta_description', 'slug', 'url', 'path',
+            'publication_end_date', 'in_navigation', 'template', 'is_home', 'languages',
+            'page_title', 'menu_title', 'meta_description', 'slug', 'url', 'path',
             'absolute_url', 'redirect', 'next_page', 'previous_page'
         ]
 
@@ -150,12 +140,12 @@ class BasePageSerializer(RequestSerializer, serializers.ModelSerializer):
         return obj.get_redirect(self.language)
 
     def get_next_page(self, obj):
-        page = obj.get_next_filtered_sibling()
+        page = obj.node.get_next_sibling()
         if page:
             return page.pk
 
     def get_previous_page(self, obj):
-        page = obj.get_previous_filtered_sibling()
+        page = obj.node.get_prev_sibling()
         if page:
             return page.pk
 
@@ -190,7 +180,7 @@ class PageSerializer(BasePageSerializer):
 
     def get_placeholders(self, obj):
         serializer = PlaceholderListSerializer(obj, context=self._context)
-        return serializer.data['placeholders']
+        return serializer.data
 
 
 class PageUrlSerializer(RequestSerializer, serializers.Serializer):

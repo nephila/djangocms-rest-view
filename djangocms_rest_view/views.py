@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function, unicode_literals
-
 from cms.models import Page
 from cms.utils.moderator import use_draft
 from django.contrib.sites.shortcuts import get_current_site
